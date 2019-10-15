@@ -2,8 +2,6 @@
 * author: Hao Wang
 */
 
-//package session05;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -13,7 +11,7 @@ import static javax.swing.JOptionPane.*;
  * Example To Win:                                                        *
  *                       。        。                               。    *
  *                       。           。                         。       *
- *  。 。 。 。 。       。              。                   。          *
+ *  。 。 。 。 。        。              。                   。          *
  *                       。                 。             。             *
  *                       。                    。       。                *
  **************************************************************************/
