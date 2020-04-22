@@ -9,16 +9,9 @@ import java.math.RoundingMode;
 
 public class Calculator extends JFrame{
 	JTextField t = new JTextField();
-	String store = ""; // store the formula that shown in the screen
+	String store = "";
 	String ans = "";
 	public Calculator(Color fg, Color bg, int width, int height) {
-        /**
-         * Create a window
-         * @param foreground Foreground color
-         * @param background Background color
-         * @param width   width of the window
-         * @param height  height of the window
-        */
 		setSize(width, height);
 		Container c = getContentPane();
 		c.setBackground(bg);
@@ -26,36 +19,36 @@ public class Calculator extends JFrame{
 		
 		Font f = new Font("Times New Roman", Font.BOLD, 60);
 		Font fscreen = new Font("Times New Roman", Font.BOLD, 100);
-        t.setFont(fscreen);
+        	t.setFont(fscreen);
 		t.setBackground(Color.BLACK);
 		t.setForeground(Color.WHITE);
 		c.add(BorderLayout.NORTH, t);
         
 		// set keyboard
 		JPanel p = new JPanel();
-        p.setBackground(new Color(50, 50, 50));
-        p.setLayout(new GridLayout(5,5, 4,4));
-        String[] labels = {
-        	"+","-","*","/","#",
-            "1","2","3","(",")",
-            "4","5","6","[","]",
-            "7","8","9","{","}",
-            "CR","0","=",".","ANS",
-        };
-        for(int i = 0; i < 25; i++){
-            JButton button = new JButton(labels[i]);
-            p.add(button);
-            button.setFont(f);
-            button.addActionListener(new MyListener()); 
-        }
-        JPanel p2 = new JPanel();
-        p2.add(p);
-        JTextArea textarea = new JTextArea();
-        textarea.setFont(f);
-        p2.add(textarea);
-        c.add(BorderLayout.CENTER, p2);
+        	p.setBackground(new Color(50, 50, 50));
+        	p.setLayout(new GridLayout(5,5, 4,4));
+        	String[] labels = {
+        		"+","-","*","/","#",
+            		"1","2","3","(",")",
+            		"4","5","6","[","]",
+            		"7","8","9","{","}",
+            		"CR","0","=",".","ANS",
+        	};
+		for(int i = 0; i < 25; i++){
+		    JButton button = new JButton(labels[i]);
+		    p.add(button);
+		    button.setFont(f);
+		    button.addActionListener(new MyListener()); 
+		}
+		JPanel p2 = new JPanel();
+		p2.add(p);
+		JTextArea textarea = new JTextArea();
+		textarea.setFont(f);
+		p2.add(textarea);
+		c.add(BorderLayout.CENTER, p2);
 		
-        setResizable(false);
+        	setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
@@ -87,11 +80,7 @@ public class Calculator extends JFrame{
 				if(stack.isEmpty())
 					return false;
 				char top = stack.pop();
-				if(top == '(' && c != ')')
-					return false;
-				else if(top == '[' && c != ']')
-					return false;
-				else if(top == '{' && c != '}')
+				if((top=='('&&c!=')')||(top=='['&&c!=']')||(top=='{'&&c!='}'))
 					return false;
 			}
 		}
@@ -99,6 +88,11 @@ public class Calculator extends JFrame{
 	}
 	
 	private boolean isValidFormula(String s) {
+		int end = s.length() - 1;
+		if(s.charAt(0)=='+'||s.charAt(0)=='*'||s.charAt(0)=='/')
+			return false;
+		if(s.charAt(end)=='+'||s.charAt(end)=='-'||s.charAt(end)=='*'||s.charAt(end)=='/')
+			return false;
 		String[] checkPoint = s.split("[0-9]+");
 		for(int i = 0; i < checkPoint.length - 1; i++) {
 			if(checkPoint[i].equals(".") && checkPoint[i+1].equals("."))
@@ -132,7 +126,7 @@ public class Calculator extends JFrame{
 	private static String perform(String sign, String op2, String op1) {
 		String res = "";
 		BigDecimal b2 = new BigDecimal(op2);
-        BigDecimal b1 = new BigDecimal(op1);
+        	BigDecimal b1 = new BigDecimal(op1);
 		if(sign.equals("/") && Double.valueOf(op1)==0.0) return "error!";
 		switch(sign) {
 			case "+":
@@ -145,7 +139,8 @@ public class Calculator extends JFrame{
 				res = b2.multiply(b1).toString();
 				break;
 			default:
-				res = b2.divide(b1, 8, RoundingMode.HALF_UP).toString();
+				double d = b2.divide(b1, 8, RoundingMode.HALF_UP).doubleValue();
+				res = d % 1 == 0? Integer.toString((int) d) : String.valueOf(d);
 		}
 		return res;
 	}
@@ -260,47 +255,47 @@ public class Calculator extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String[] str = {
-					"+","-","*","/",
-		            "1","2","3","(",")",
-		            "4","5","6","[","]",
-		            "7","8","9","{","}",
-		                "0",    ".",
+				"+","-","*","/",
+		            	"1","2","3","(",")",
+		            	"4","5","6","[","]",
+		            	"7","8","9","{","}",
+		                    "0",    ".",
 			};
-            String clear = "";
-            store += e.getActionCommand();
-            for (String s : str) {
-                if (e.getActionCommand().equals(s))
-                    t.setText(store);
-            }
-            if(e.getActionCommand().equals("CR")){ // enter "CR" -> clear text field
-            	store = "";
-                t.setText(clear);
-            }
-            if(e.getActionCommand().equals("#")){  // enter "#" -> back
-                if(!store.equals("") && !store.equals("#"))
-                	store = store.substring(0, store.length()-2);
-                if(store.equals("#"))
-                	store = "";
-                t.setText(store);
-            }
-            if(e.getActionCommand().equals("ANS")){ // enter "ANS" -> show last result
-            	store = "";
-                t.setText(ans); 
-            }
-            if(e.getActionCommand().equals("=")){  // enter "#" -> calculate the formula
-            	String res = store.substring(0, store.length()-1);
-            	store = "";
-            	if(res.equals("") || !isParentheses(res) || !isValidFormula(res)) {
-            		ans = "";
-            		t.setText("ERROR!");
-            	} else {
-            		res = toStandardFormula(res);
-	            	String[] arr = seperateOperator(res);
-	        		arr = infixToPostfix(arr);
-	        		ans = evaluatePostfix(arr);
-	            	t.setText(ans);
-            	}
-            }
+		    	String clear = "";
+		    	store += e.getActionCommand();
+		    	for (String s : str) {
+				if (e.getActionCommand().equals(s))
+			    		t.setText(store);
+		    	}
+		    	if(e.getActionCommand().equals("CR")){ // enter "CR" -> clear text field
+				store = "";
+				t.setText(clear);
+		    	}
+		    	if(e.getActionCommand().equals("#")){  // enter "#" -> back
+				if(!store.equals("") && !store.equals("#"))
+					store = store.substring(0, store.length()-2);
+				if(store.equals("#"))
+					store = "";
+				t.setText(store);
+		    	}
+		    	if(e.getActionCommand().equals("ANS")){ // enter "ANS" -> show last result
+				store = "";
+				t.setText(ans); 
+		    	}
+		    	if(e.getActionCommand().equals("=")){  // enter "#" -> calculate the formula
+				String res = store.substring(0, store.length()-1);
+				store = "";
+				if(res.equals("") || !isParentheses(res) || !isValidFormula(res)) {
+					ans = "";
+					t.setText("ERROR!");
+				} else {
+					res = toStandardFormula(res);
+					String[] arr = seperateOperator(res);
+					arr = infixToPostfix(arr);
+					ans = evaluatePostfix(arr);
+					t.setText(ans);
+				}
+		    	}
 		}
 	}
 }
