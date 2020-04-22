@@ -237,7 +237,7 @@ public class Calculator extends JFrame{
 			}
 			else if(i == s.length() - 1)
 				arr[index++] = s.substring(flag, i + 1);
-			if(index == arr.length) {
+			if(index == arr.length - 1 || index == arr.length) {
 				String[] temp = new String[arr.length * 2];
 				for(int j = 0; j < arr.length; j++)
 					temp[j] = arr[j];
