@@ -278,11 +278,11 @@ public class Calculator extends JFrame{
 					store = "";
 				t.setText(store);
 		    	}
-		    	if(e.getActionCommand().equals("ANS")){ // enter "ANS" -> show last result
+		    	if(e.getActionCommand().equals("ANS")){ // enter "ANS" -> show the last result
 				store = "";
 				t.setText(ans); 
 		    	}
-		    	if(e.getActionCommand().equals("=")){  // enter "#" -> calculate the formula
+		    	if(e.getActionCommand().equals("=")){  // enter "=" -> calculate the formula
 				String res = store.substring(0, store.length()-1);
 				store = "";
 				if(res.equals("") || !isParentheses(res) || !isValidFormula(res)) {
